@@ -19,7 +19,7 @@ Back End Improvements:
 * Implementation of 2 working functions:
   * function ownerOf: returns owner of Zombie
   * function balanceOf: shows how many tokens created
- *Implementation of Goerli Testnet
+* Implementation of Goerli Testnet
 
 Almost implemented improvements (not fully working)
 * Change Name of zombie
