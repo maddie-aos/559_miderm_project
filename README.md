@@ -2,9 +2,9 @@
 
 |Team Member | Email | CWID |
 |-------|------|--------|
-|Madeline Smith| madeline.smith@csu.fullerton.edu| 88664432|
+|Madeline Smith| madeline.smith@csu.fullerton.edu| 886664432|
 |Aria Askaryar| *fill in here*| 888046638 |
-|*fill in here*| *fill in here*| *fill in here*|
+|Vincent Trung| vincenttrung@csu.fullerton.edu| 885887547|
 |*fill in here*| *fill in here*| *fill in here*|
 
 
