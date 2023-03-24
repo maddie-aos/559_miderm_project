@@ -1,4 +1,4 @@
-# 559_miderm_project
+#CPSC 559 Midterm Project
 
 |Team Member | Email | CWID |
 |-------|------|--------|
