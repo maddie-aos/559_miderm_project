@@ -5,6 +5,7 @@ var zombiehelper = artifacts.require("./zombiehelper.sol");
 var zombieattack = artifacts.require("./zombieattack.sol");
 var zombieownership = artifacts.require("./zombieownership.sol");
 
+
 module.exports = function(deployer) {
 
     deployer.deploy(safemath);
@@ -13,4 +14,5 @@ module.exports = function(deployer) {
     deployer.deploy(zombiehelper);
     deployer.deploy(zombieattack);
     deployer.deploy(zombieownership);
+   
 }
