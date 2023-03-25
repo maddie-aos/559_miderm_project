@@ -17,7 +17,7 @@
 
 <body>
     <link rel="stylesheet" href="./style.css">
-  <div id="txStatus"></div>
+  <div id="txStatus">Welcome to Cryptozombies!</div>
   <div id="zombies"></div>
   <div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
     <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
@@ -54,7 +54,7 @@
 
     function startApp() {
       //ZombieOwnership contratc address
-      var cryptoZombiesAddress = "0xa239D4223D320687c4F19e3a0F913697C42235c5";
+      var cryptoZombiesAddress = "0xF495D8BC9CF60A58Df2fb98Ec68E1239F938F367";
       /*var zombieAttackAddress = "0xb000d9E67C5DBE047759Dc5840C1Bb5029061BC6";*/
       cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
       /*zombieAttack = new web3.eth.Contract(cryptoZombiesABI, zombieAttackAddress)*/
@@ -247,10 +247,10 @@
       getZombiesByOwner(userAccount)
             .then(levelUp);
 
-    });
-
+    })
+    
     ownerInfoButton.addEventListener('click', ()=>{
-      ownerOf(userAccount);
+      ownerOf(1);
     });
 
     balanceInfoButton.addEventListener('click',()=>{
