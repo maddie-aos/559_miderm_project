@@ -40,24 +40,39 @@
       <button class="changeDnaButton">Change Dna</button>
     </div>
   </div>-->
+  
   <script>
-    
+
     var cryptoZombies;
     var userAccount;
     const showZombieButton = document.querySelector('.showZombieButton');
     const createzombieButton = document.querySelector('.createzombieButton');
     const levelupButton = document.querySelector('.levelupButton');
-    /*const changeNameButton = document.querySelector('.changeNameButton');
-    const changeDnaButton = document.querySelector('.chnageDnaButton');*/
+    const changeNameButton = document.querySelector('.changeNameButton');
+    const changeDnaButton = document.querySelector('.chnageDnaButton');
     const ownerInfoButton = document.querySelector('.ownerInfoButton');
     const balanceInfoButton = document.querySelector('.balanceInfoButton');
 
     function startApp() {
+	
       //ZombieOwnership contratc address
-      var cryptoZombiesAddress = "0xF495D8BC9CF60A58Df2fb98Ec68E1239F938F367";
-      /*var zombieAttackAddress = "0xb000d9E67C5DBE047759Dc5840C1Bb5029061BC6";*/
+      //var cryptoZombiesAddress = "0xC08d276D3022F1E9E1e99eBAa6410fE4FcbEcB8f";
+      var cryptoZombiesAddress = "0x49010833B6430bb43De7Cfd03FC4CBb21FaF339B";
+
       cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
-      /*zombieAttack = new web3.eth.Contract(cryptoZombiesABI, zombieAttackAddress)*/
+
+
+ //the following code from Lesson 6, chapter 5 is obsolete
+ //     var accountInterval = setInterval(function () {
+
+  //      if (web3.eth.accounts[0] !== userAccount) {
+          //userAccount = web3.eth.accounts[0];
+
+     //     getZombiesByOwner(userAccount)
+      //      .then(displayZombies);
+      //  }
+     // }, 100);
+
       cryptoZombies.events.Transfer({ filter: { _to: userAccount } })
         .on("data", function (event) {
           let data = event.returnValues;
@@ -66,11 +81,13 @@
     }
 
     function displayZombies(ids) {
-      $("#txStatus").text("Displaying Zombies:");
-      $("#zombies").text();
+      $("#zombies").empty();
       for (id of ids) {
+        console.log(id)
         getZombieDetails(id)
           .then(function (zombie) {
+
+
             $("#zombies").append(`<div class="zombie">
               <ul>
                 <li>Name: ${zombie.name}</li>
@@ -87,22 +104,24 @@
     }
 
     function createRandomZombie(name) {
+
+
       $("#txStatus").text("Creating new zombie on the blockchain. This may take a while...");
 
       return cryptoZombies.methods.createRandomZombie(name)
         .send({ from: userAccount })
         .on("receipt", function (receipt) {
-          $("#txStatus").text("Successfully created " + name + "!");
+          $("#txStatus").text("Successfully created " + userAccount + "!");
 
           getZombiesByOwner(userAccount).then(displayZombies);
         })
         .on("error", function (error) {
 
-          $("#txStatus").text("Transaction cancelled");
+          $("#txStatus").text("Transaction Failed");
         });
     }
 
-   /* function feedOnKitty(zombieId, kittyId) {
+    function feedOnKitty(zombieId, kittyId) {
       $("#txStatus").text("Eating a kitty. This may take a while...");
       return cryptoZombies.methods.feedOnKitty(zombieId, kittyId)
         .send({ from: userAccount })
@@ -111,21 +130,9 @@
           getZombiesByOwner(userAccount).then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text("Kitty feeding failed");
+          $("#txStatus").text(error);
         });
-    }*/
-
-    /*function attackZombie(name){
-      $("txStatus").text("Launching zombie attack: ");
-      return cryptoZombies.methods.attackZombie(zombieId)
-      .send({from: attackAccount, value: web3.utils.toWei("0.001", "ether")})
-      .on("receipt", function(receipt) {
-        $("txStatus").text("Attack launched sucessfully!");
-      })
-      .on("error", function (error) {
-        $("txStatus").text("Attack failed");
-      });
-    }*/
+    }
 
     function levelUp(zombieId) {
       $("#txStatus").text("Leveling up your zombie...");
@@ -135,45 +142,44 @@
           $("#txStatus").text("Power overwhelming! Zombie successfully leveled up");
         })
         .on("error", function (error) {
-          $("#txStatus").text("Level up failed");
+          $("#txStatus").text("Level Up Failed");
         });
     }
-
-    /*function changeName(zombieId, newName){
+    function changeName(zombieId, newName){
       $("#txStatus").text("Changing name, please wait....");
       return cryptoZombies.methods.changeName(zombieId,newName)
-        .send({from: userAccount, value: web3.utils.toWei("0.001", "ether")})
+        .send({from: userAccount})
         .on("receipt", function (receipt) {
           $("#txStatus").text("Name of the Zombie was changed sucessfully!!");
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text("Name Change failed");
+          $("#txStatus").text(error);
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         });
-    }*/
+    }
 
-    /*function changeDna(zombieId, newDna){
+    function changeDna(zombieId, newDna){
       $("#txStatus").text("Changing DNA, please wait....");
       return cryptoZombies.methods.changeDna(zombieId,newDna)
-        .send({from: userAccount, value: web3.utils.toWei("0.001", "ether")})
+        .send({from: userAccount})
         .on("receipt", function (receipt) {
           $("#txStatus").text("DNA of the Zombie was changed sucessfully!!");
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text("DNA change failed");
+          $("#txStatus").text(error);
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         });
-    }*/
+    }
 
     async function ownerOf(zombieId){
       $("#txStatus").text("Finding Owner of the ZOMBIESSS...");
-        var ownerOfZombies = await cryptoZombies.methods.ownerOf(zombieId).call();
+      var ownerOfZombies = await cryptoZombies.methods.ownerOf(zombieId).call();
       $("#txStatus").text("Owner of the Zombies is: " + ownerOfZombies);
     }
 
@@ -221,7 +227,21 @@
         console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
     }
    });
+ 
+   //the following code from Lesson 6, chapter 2 is obsolete
+   //metamask no longer inject web3 since early 2021
+   //window.addEventListener('load', function () {
 
+  //    if (typeof web3 !== 'undefined') {
+   //     web3js = new Web3(web3.currentProvider);
+   //   } else {
+
+    //  }
+
+
+    //  startApp()
+
+  //  }) 
 
    ethereum.on('accountsChanged', (accounts) => {
        window.location.reload();
@@ -247,39 +267,19 @@
       getZombiesByOwner(userAccount)
             .then(levelUp);
 
-    })
-    
-    ownerInfoButton.addEventListener('click', ()=>{
-      ownerOf(1);
     });
-
+    ownerInfoButton.addEventListener('click', ()=>{
+      ownerOf(userAccount);
+    });
     balanceInfoButton.addEventListener('click',()=>{
       balanceOf(userAccount);
     });
-
-    /*changeNameButton.addEventListener('click', ()=>{
+    changeNameButton.addEventListener('click', ()=>{
       changeName(userAccount,$("#namechangeinput").val());
     });
-
     changeDnaButton.addEventListener('click', ()=>{
       changeDna(userAccount,$("#dnachangeinput").val());
-    });*/
-
-    /*attackZombieButton.addEventListener('click', () => {
-      getZombiesByOwner(userAccount)
-            .then(attackZombie);
-
-    });*/
-
-  
-   /* feedOnKittyButton.addEventListener('click', () => {
-      getZombiesByOwner(userAccount)
-            .then(feedOnKitty);
-
-    });*/
-
-    
-
+    });
 
 
   </script>
