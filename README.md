@@ -5,7 +5,7 @@
 |Madeline Smith| madeline.smith@csu.fullerton.edu| 886664432|
 |Aria Askaryar| aaskaryar0@csuf.fullerton.edu| 888046638 |
 |Vincent Trung| vincenttrung@csu.fullerton.edu| 885887547|
-|*fill in here*| *fill in here*| *fill in here*|
+|Krishna| krishna17897@csu.fullerton.edu| 886198043|
 
 
 Front End Improvements:
