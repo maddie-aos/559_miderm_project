@@ -63,6 +63,36 @@ body {
   font-size: 16px;
 }
 
+#kitties {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.kitty {
+  width: 30%;
+  margin: auto;
+  padding: 10px;
+  background-color: #801717;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px #ccc;
+}
+
+
+.kitty ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+}
+
+.kitty li {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+
 button {
   font-size: 18px;
   padding: 10px 20px;

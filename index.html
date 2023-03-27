@@ -10,6 +10,7 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.2.7-rc.0/web3.min.js"></script>
   <script language="javascript" type="text/javascript" src="cryptozombies_abi.js"></script>
+  <script language="javascript" type="text/javascript" src="cryptokitty_abi.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Creepster&displays=swap');
   </style>
@@ -19,24 +20,37 @@
     <link rel="stylesheet" href="./style.css">
   <div id="txStatus">Welcome to Cryptozombies!</div>
   <div id="zombies"></div>
+  <div id="kitties"></div>
+
+  <div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
+    <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
+      <button class="createzombieButton">Create Zombie</button>
+      <button class="levelupButton">Level Up</button>
+      <button class="createkittyButton">Create Kitty</button>
+      <button class="showKittyButton">Show Kitty</button>
+      
+    </div>
+  </div>
+
   <div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
     <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
       <button class="showZombieButton">Show Zombies</button>
-      <button class="createzombieButton">Create Zombie</button>
-      <button class="levelupButton">Level Up</button>
       <button class="ownerInfoButton">Owner Info</button>
       <button class="balanceInfoButton">Balance Info</button>
     </div>
   </div>
- <!--<div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
+
+ <div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
     <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
       <input type="text" id="namechangeinput" placeholder="Enter New Name">
-      <input type="text" id="dnachangeinput" placeholder="Enter 16-Digit Number">
+      <button class="changeNameButton">Change Name</button>
+      
     </div>
   </div> 
-  <div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
+  <!--<div class="button" style="display: block; margin-bottom: 0; margin-right: 10px;">
     <div style="display: flex; justify-content: center; align-items: center; padding-top: 10px;">
-      <button class="changeNameButton">Change Name</button>
+      
+      <input type="text" id="dnachangeinput" placeholder="Enter 16-Digit Number">
       <button class="changeDnaButton">Change Dna</button>
     </div>
   </div>-->
@@ -44,43 +58,51 @@
   <script>
 
     var cryptoZombies;
+    var cryptoKitties;
     var userAccount;
+    var kittyDna;
+    var kittyId;
+    var zombieId;
+
     const showZombieButton = document.querySelector('.showZombieButton');
     const createzombieButton = document.querySelector('.createzombieButton');
     const levelupButton = document.querySelector('.levelupButton');
     const changeNameButton = document.querySelector('.changeNameButton');
-    const changeDnaButton = document.querySelector('.chnageDnaButton');
     const ownerInfoButton = document.querySelector('.ownerInfoButton');
     const balanceInfoButton = document.querySelector('.balanceInfoButton');
+    const showKittyButton = document.querySelector('.showKittyButton');
+    const createkittyButton = document.querySelector('.createkittyButton');
+/*    const changeDnaButton = document.querySelector('.chnageDnaButton');
+    const feedZombieButton = document.querySelector('.feedzombieButton'); */
 
     function startApp() {
 	
       //ZombieOwnership contratc address
       //var cryptoZombiesAddress = "0xC08d276D3022F1E9E1e99eBAa6410fE4FcbEcB8f";
-      var cryptoZombiesAddress = "0x49010833B6430bb43De7Cfd03FC4CBb21FaF339B";
+      var cryptoZombiesAddress = "0x6211C70114E9252620cCba44169E03be408030ab";
 
       cryptoZombies = new web3.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
 
+      var cryptokittyAddress = "0xcA09582403EB7F8264fb97eE806c8a437069280D";
 
- //the following code from Lesson 6, chapter 5 is obsolete
- //     var accountInterval = setInterval(function () {
+      cryptoKitties = new web3.eth.Contract(cryptoKittyABI, cryptokittyAddress);
 
-  //      if (web3.eth.accounts[0] !== userAccount) {
-          //userAccount = web3.eth.accounts[0];
-
-     //     getZombiesByOwner(userAccount)
-      //      .then(displayZombies);
-      //  }
-     // }, 100);
 
       cryptoZombies.events.Transfer({ filter: { _to: userAccount } })
         .on("data", function (event) {
           let data = event.returnValues;
           getZombiesByOwner(userAccount).then(displayZombies);
         }).on("error", console.error);
+        
+      cryptoKitties.events.Transfer({ filter: { _to: userAccount } })
+        .on("data", function (event) {
+          let data = event.returnValues;
+          getKittyByOwner(userAccount).then(displayKitties);
+        }).on("error", console.error);
     }
 
     function displayZombies(ids) {
+      $("#txStatus").text("Displaying Zombies");
       $("#zombies").empty();
       for (id of ids) {
         console.log(id)
@@ -103,6 +125,29 @@
 
     }
 
+    function displayKitties(ids) {
+      $("#txStatus").text("Displaying Kitties");
+      $("#kitties").empty();
+      for (id of ids) {
+        console.log(id)
+        getKittyDetails(id)
+          .then(function (kitty) {
+
+            /*kittyDna=kitty.dna;
+            kittyId = id;*/
+            $("#kitties").append(`<div class="kitty">
+              <ul>
+                <li>Name: ${kitty.name}</li>
+                <li>DNA: ${kitty.dna}</li>
+                <li>Level: ${kitty.level}</li>
+              </ul>
+            </div>`);
+          });
+      }
+
+    }
+
+
     function createRandomZombie(name) {
 
 
@@ -121,7 +166,22 @@
         });
     }
 
-    function feedOnKitty(zombieId, kittyId) {
+    function createRandomKitty(name) {
+      $("#txStatus").text("Creating new Kittyy on the blockchain. This may take a while...");
+      
+      return cryptoKitties.methods.createRandomKitty(name)
+      .send({ from: userAccount })
+      .on("receipt", function (receipt) {
+        $("#txStatus").text("Successfully created " + userAccount + "!");
+        
+        getkittyByOwner(userAccount).then(displayKitties);
+      })
+      .on("error", function (error) {
+        $("#txStatus").text("Could not make kitty!");
+      });
+    }
+
+    /*function feedOnKitty(zombieId, kittyId) {
       $("#txStatus").text("Eating a kitty. This may take a while...");
       return cryptoZombies.methods.feedOnKitty(zombieId, kittyId)
         .send({ from: userAccount })
@@ -132,7 +192,7 @@
         .on("error", function (error) {
           $("#txStatus").text(error);
         });
-    }
+    }*/
 
     function levelUp(zombieId) {
       $("#txStatus").text("Leveling up your zombie...");
@@ -155,13 +215,13 @@
           getZombiesByOwner(userAccount).then(displayZombies);
         })
         .on("error", function (error) {
-          $("#txStatus").text(error);
+          $("#txStatus").text("Name Change Failed!!!");
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         });
     }
 
-    function changeDna(zombieId, newDna){
+    /*function changeDna(zombieId, newDna){
       $("#txStatus").text("Changing DNA, please wait....");
       return cryptoZombies.methods.changeDna(zombieId,newDna)
         .send({from: userAccount})
@@ -175,7 +235,7 @@
           $("#zombies").empty();
           getZombiesByOwner(userAccount).then(displayZombies);
         });
-    }
+    }*/
 
     async function ownerOf(zombieId){
       $("#txStatus").text("Finding Owner of the ZOMBIESSS...");
@@ -200,6 +260,20 @@
     function getZombiesByOwner(owner) {
       return cryptoZombies.methods.getZombiesByOwner(owner).call()
     }
+
+    function getKittyDetails(id) {
+      return cryptoKitties.methods.kitties(id).call()
+    }
+
+    function getKittyDna() {
+      $("#txStatus").text("errr");
+      return cryptoKitties.methods.getDna(0).call()
+    }
+
+    function getkittyByOwner(owner) {
+      return cryptoKitties.methods.getKittyByOwner(owner).call()
+    }
+
 
     window.addEventListener('load', async () => {
     // Modern dapp browsers...
@@ -228,20 +302,7 @@
     }
    });
  
-   //the following code from Lesson 6, chapter 2 is obsolete
-   //metamask no longer inject web3 since early 2021
-   //window.addEventListener('load', function () {
 
-  //    if (typeof web3 !== 'undefined') {
-   //     web3js = new Web3(web3.currentProvider);
-   //   } else {
-
-    //  }
-
-
-    //  startApp()
-
-  //  }) 
 
    ethereum.on('accountsChanged', (accounts) => {
        window.location.reload();
@@ -269,17 +330,33 @@
 
     });
     ownerInfoButton.addEventListener('click', ()=>{
-      ownerOf(userAccount);
+      ownerOf(zombieId);
     });
+
     balanceInfoButton.addEventListener('click',()=>{
       balanceOf(userAccount);
     });
+
     changeNameButton.addEventListener('click', ()=>{
       changeName(userAccount,$("#namechangeinput").val());
     });
-    changeDnaButton.addEventListener('click', ()=>{
-      changeDna(userAccount,$("#dnachangeinput").val());
+
+    createkittyButton.addEventListener('click', () => {
+      createRandomKitty("kitty");
+
     });
+
+    showKittyButton.addEventListener('click', () => {
+      getkittyByOwner(userAccount)
+            .then(displayKitties);
+
+    });
+
+
+
+/*    changeDnaButton.addEventListener('click', ()=>{
+      changeDna(userAccount,$("#dnachangeinput").val());
+    });*/
 
 
   </script>
