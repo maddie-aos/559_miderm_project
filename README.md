@@ -20,6 +20,7 @@ Back End Improvements:
   * function ownerOf: returns owner of Zombie
   * function balanceOf: shows how many tokens created
 * Implementation of Goerli Testnet
+*Implementation of CryptoKitty Ownership and Factory
 
 Almost implemented improvements (not fully working)
 * Change Name of zombie
